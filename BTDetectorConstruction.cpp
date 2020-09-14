@@ -14,7 +14,7 @@
 
 BTDetectorConstruction::BTDetectorConstruction()
 : G4VUserDetectorConstruction(),
-  fScoringVolume(0)
+  fScoringVolume(nullptr)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -30,13 +30,14 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 	G4NistManager* nist = G4NistManager::Instance();
 
 	//World Parameters
-	G4double world_sizeXY = 20 * cm;
+	G4double world_sizeX = 20 * cm;
+	G4double world_sizeY = 20 * cm;
 	G4double world_sizeZ = 30 * cm;
 	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
     G4Box* solidWorld =
         new G4Box("World",       //name
-            1 * world_sizeXY, 1 * world_sizeXY, 1 * world_sizeZ);     //size
+            world_sizeX, world_sizeX, world_sizeZ);     //size
 
     G4LogicalVolume* logicWorld =
         new G4LogicalVolume(solidWorld,  //the world is solid
