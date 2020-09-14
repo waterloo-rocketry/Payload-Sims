@@ -1,8 +1,7 @@
 /// \file BTDetectorConstruction.hh
 /// \brief Definition of the BTDetectorConstruction class
 
-#ifndef BTDetectorConstruction_h
-#define BTDetectorContruction_h 1
+#pragma once
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
