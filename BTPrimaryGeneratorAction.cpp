@@ -17,8 +17,8 @@
 
 BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     : G4VUserPrimaryGeneratorAction(),
-    fParticleGun(0),
-    fEnvelopeBox(0)
+    fParticleGun(nullptr),
+    fEnvelopeBox(nullptr)
 {
     G4int n_particle = 1;
     fParticleGun = new G4ParticleGun(n_particle);
@@ -73,10 +73,10 @@ void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
             "MyCode0002", JustWarning, msg);
     }
 
-    G4double size = 0.8;
-    G4double x0 = size * envSizeXY * (G4UniformRand() - 0.5);
-    G4double yo = size * envSizeXY * (G4UniformRand() - 0.5);
-    G4double z0 = -0.5 * envSizeZ;
+    const G4double size = 0.8;
+    const G4double x0 = size * envSizeXY * (G4UniformRand() - 0.5);
+    const G4double yo = size * envSizeXY * (G4UniformRand() - 0.5);
+    const G4double z0 = -0.5 * envSizeZ;
 
     fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
 
