@@ -1,5 +1,4 @@
-#ifndef BTActionInitialization_h
-#define BTActionInitialization_h 1
+#pragma once
 
 #include "G4VUserActionInitialization.hh"
 
