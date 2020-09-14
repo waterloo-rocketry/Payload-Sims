@@ -1,8 +1,7 @@
 /// \file BTPrimaryGeneratorAction.hh
 /// \brief Definition of the BTPrimaryGeneratorAction class
 
-#ifndef BTPrimaryGeneratorAction_h
-#define BTPrimaryGeneratorAction_h 1
+#pragma once
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
