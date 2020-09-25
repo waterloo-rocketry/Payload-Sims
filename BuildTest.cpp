@@ -1,11 +1,6 @@
 #include "BTDetectorConstruction"
 #include "BTActionInitialization"
-
-#ifdef G4MULTITHREADED
-#include "G4MTRunManager.hh"
-#else
 #include "G4RunManager.hh"
-#endif
 
 #include "G4UImanager.hh"
 #include "QBBC.hh"
@@ -17,20 +12,17 @@
 
 int main(int argc, char** argv)
 {
-	///detect interactive mode and define UI session
-	G4UIExecutive* ui = 0;
+	// detect interactive mode and define UI session
+	G4UIExecutive* ui = nullptr;
 	if (argc == 1) {
 		ui = new G4UIExectutive(argc, argv)
 	}
 
-	///default run manager
-#ifdef G4MULTITHREADED
-	G4MTRunManager* runManager = new G4MTRunManager;
-#else
-	G4RunManager* runManager = new G4RunManager;
-#endif
+	// default run manager
+    G4RunManager* runManager = new G4RunManager;
 
-	//set user classes
+
+	// set user classes
     // detector construction
     runManager->SetUserInitialization(new BTDetectorConstruction());
 
