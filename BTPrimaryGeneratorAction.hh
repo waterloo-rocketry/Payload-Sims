@@ -22,5 +22,3 @@ public:
 	const G4ParticleGun* fParticleGun;
 	G4Box* fEnvelopeBox;
 };
-
-#endif

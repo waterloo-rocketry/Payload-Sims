@@ -1,7 +1,7 @@
 /// \file BTPrimaryGeneratorAction
 /// \brief Implementation of the BTPrimaryGeneratorAction class
 
-#include "B1PrimaryGeneratorAction.hh"
+#include "BTPrimaryGeneratorAction.hh"
 
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
@@ -12,8 +12,6 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     : G4VUserPrimaryGeneratorAction(),
@@ -33,14 +31,10 @@ BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     fParticleGun->SetParticleEnergy(18. * MeV);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 BTPrimaryGeneratorAction::~BTPrimaryGeneratorAction()
 {
     delete fParticleGun;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
@@ -52,13 +46,6 @@ void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     G4double envSizeXY = 0;
     G4double envSizeZ = 0;
 
-    if (!fEnvelopeBox)
-    {
-        G4LogicalVolume* envLV
-            = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
-        if (envLV) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
-    }
-
     if (fEnvelopeBox) {
         envSizeXY = fEnvelopeBox->GetXHalfLength() * 2.;
         envSizeZ = fEnvelopeBox->GetZHalfLength() * 2.;
@@ -66,14 +53,11 @@ void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     else 
     {
-        G4ExceptionDescription msg;
-        msg << "The envelope volume cannot be found. \n";
-        msg << "The gun will be placed at the origin.";
-        G4Exception("BTPrimaryGeneratorAction::GeneratePrimaries()",
-            "MyCode0002", JustWarning, msg);
+        G4LogicalVolume* envLV
+            = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
+        if (envLV) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
     }
 
-    const G4double size = 0.8;
     const G4double x0 = size * envSizeXY * (G4UniformRand() - 0.5);
     const G4double yo = size * envSizeXY * (G4UniformRand() - 0.5);
     const G4double z0 = -0.5 * envSizeZ;

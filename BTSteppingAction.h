@@ -19,5 +19,3 @@ private:
 	BTEventAction* fEventAction;
 	G4LogicalVolume* fScoringVolume;
 };
-
-#endif

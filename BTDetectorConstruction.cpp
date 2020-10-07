@@ -10,39 +10,33 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 BTDetectorConstruction::BTDetectorConstruction()
 : G4VUserDetectorConstruction(),
   fScoringVolume(nullptr)
 {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 BTDetectorConstruction::~BTDetectorConstruction()
 {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4VPhysicalVolume* BTDetectorConstruction::Construct()
 {
 	// Get nist material manager
 	G4NistManager* nist = G4NistManager::Instance();
 
-	//World Parameters
-	G4double world_sizeX = 20 * cm;
-	G4double world_sizeY = 20 * cm;
-	G4double world_sizeZ = 30 * cm;
+	// World Parameters
+	const G4double world_sizeX = 20 * cm;
+	const G4double world_sizeY = 20 * cm;
+	const G4double world_sizeZ = 30 * cm;
 	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
     G4Box* solidWorld =
-        new G4Box("World",       //name
-            world_sizeX, world_sizeX, world_sizeZ);     //size
+        new G4Box("World",       // name
+            world_sizeX, world_sizeX, world_sizeZ);     // size
 
     G4LogicalVolume* logicWorld =
-        new G4LogicalVolume(solidWorld,  //the world is solid
-            world_mat,                   //material
-            "World");                    //name
+        new G4LogicalVolume(solidWorld,  // the world is solid
+            world_mat,                   // material
+            "World");                    // name
 
     G4VPhysicalVolume* physWorld =
         new G4PVPlacement(0,       //no rotation
@@ -60,7 +54,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
     G4Box* solidwb =
         new G4Box("Water Box",   //name
-            1 * wb_sizeXY, 1 * wb_sizeXY, 1 * wb_sizeZ); //size
+            wb_sizeXY, wb_sizeXY, wb_sizeZ); //size
 
     G4LogicalVolume* logicwb =
         new G4LogicalVolume(solidwb,       //box is solid
