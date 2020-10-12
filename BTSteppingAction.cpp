@@ -34,6 +34,6 @@ void BTSteppingAction::UserSteppingAction(const G4Step* step)
 	if (volume != fScoringVolume) return;
 
 	///collect energy deposited in this step
-	G4double edepStep = step->GetTotalEbergyDeposit();
+	G4double edepStep = step->GetTotalEnergyDeposit();
 	fEventAction->AddEdep(edepStep);
 }
