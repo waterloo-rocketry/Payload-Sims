@@ -66,7 +66,7 @@ void BTRunAction::EndOfRunAction(const G4Run* run)
     const G4double dose = edep / mass;
     const G4double rmsDose = rmsEdep / mass;
 
-    auto BTPrimaryGeneratorAction* generatorAction
+    auto generatorAction
         = static_cast<const BTPrimaryGeneratorAction*>
         (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAcion());
     G4String runCondition;

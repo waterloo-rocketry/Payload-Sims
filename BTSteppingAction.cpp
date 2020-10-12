@@ -19,7 +19,7 @@ BTSteppingAction::~BTSteppingAction()
 void BTSteppingAction::UserSteppingAction(const G4Step* step)
 {
 	if (!fScoringVolume) {
-		auto BTDetectorConstruction* detectorConstruction
+		auto detectorConstruction
 			= static_cast<const BTDetectorConstruction*>
 			(G4RunManager::GetRunManager()->GetUserDetectorConstruction());
 		fScoringVolume = detectorConstruction->GetScoringVolume();
