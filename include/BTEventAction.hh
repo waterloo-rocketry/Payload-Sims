@@ -8,8 +8,8 @@
 
 class BTRunAction;
 
-/// Event action class
-///
+// Event action class
+//
 
 class BTEventAction : public G4UserEventAction
 {
