@@ -9,7 +9,6 @@
 class BTRunAction;
 
 // Event action class
-//
 
 class BTEventAction : public G4UserEventAction
 {
