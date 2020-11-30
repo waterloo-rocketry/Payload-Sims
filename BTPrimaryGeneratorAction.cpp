@@ -16,6 +16,7 @@
 BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     : G4VUserPrimaryGeneratorAction(),
     fParticleGun(nullptr),
+    nParticleGun(nullptr),
     fEnvelopeBox(nullptr)
 {
     G4int n_particle = 1;
@@ -28,12 +29,26 @@ BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
         = particleTable->FindParticle(particleName = "gamma");
     fParticleGun->SetParticleDefinition(particle);
     fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-    fParticleGun->SetParticleEnergy(18. * MeV);
+    fParticleGun->SetParticleEnergy(10. * MeV);
+
+    G4int n_particle2 = 1;
+    nParticleGun = new G4ParticleGun(n_particle2);
+
+    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+    G4String particleName;
+    G4ParticleDefinition* particle2
+        = particleTable->FindParticle(particleName = "neutron");
+    nParticleGun->SetParticleDefinition(particle);
+    nParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+    nParticleGun->SetParticleEnergy(1. * MeV);
+
 }
 
 BTPrimaryGeneratorAction::~BTPrimaryGeneratorAction()
 {
     delete fParticleGun;
+
+    delete nParticleGun;
 }
 
 void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -51,7 +66,7 @@ void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         envSizeZ = fEnvelopeBox->GetZHalfLength() * 2.;
     }
 
-    else 
+    else
     {
         G4LogicalVolume* envLV
             = G4LogicalVolumeStore::GetInstance()->GetVolume("Envelope");
@@ -65,4 +80,9 @@ void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
 
     fParticleGun->GeneratePrimaryVertex(anEvent);
+
+    nParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
+
+    nParticleGun->GeneratePrimaryVertex(anEvent);
+
 }
