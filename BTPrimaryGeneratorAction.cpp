@@ -28,7 +28,7 @@ BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     G4ParticleDefinition* particle
         = particleTable->FindParticle(particleName = "gamma");
     fParticleGun->SetParticleDefinition(particle);
-    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
     fParticleGun->SetParticleEnergy(10. * MeV);
 
     G4int n_particle2 = 1;
@@ -39,7 +39,7 @@ BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     G4ParticleDefinition* particle2
         = particleTable->FindParticle(particleName = "neutron");
     nParticleGun->SetParticleDefinition(particle);
-    nParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+    nParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
     nParticleGun->SetParticleEnergy(1. * MeV);
 
 }
@@ -73,9 +73,9 @@ void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (envLV) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
     }
 
-    const G4double x0 = size * envSizeXY * (G4UniformRand() - 0.5);
-    const G4double yo = size * envSizeXY * (G4UniformRand() - 0.5);
-    const G4double z0 = -0.5 * envSizeZ;
+    const G4double x0 = size * envSizeXY * (G4UniformRand() 1);
+    const G4double yo = size * envSizeXY * (G4UniformRand() 1);
+    const G4double z0 = 1 * envSizeZ;
 
     fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
 
