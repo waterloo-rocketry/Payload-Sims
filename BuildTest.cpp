@@ -1,5 +1,5 @@
-#include "BTDetectorConstruction"
-#include "BTActionInitialization"
+#include "BTDetectorConstruction.hh"
+#include "BTActionInitialization.hh"
 #include "G4RunManager.hh"
 
 #include "G4UImanager.hh"
@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	// detect interactive mode and define UI session
 	G4UIExecutive* ui = nullptr;
 	if (argc == 1) {
-		ui = new G4UIExectutive(argc, argv)
+		ui = new G4UIExecutive(argc, argv);
 	}
 
 	// default run manager
