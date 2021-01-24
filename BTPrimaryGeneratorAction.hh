@@ -20,5 +20,7 @@ public:
 	virtual void GeneratePrimaries(G4Event*);
 
 	const G4ParticleGun* fParticleGun;
+
+	const G4ParticleGun* nParticleGun;
 	G4Box* fEnvelopeBox;
 };
