@@ -16,10 +16,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Locate sources and headers
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/src/*.h)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 # Add executable and link to G4 libraries
-add_executable(BuildTest BuildTest.cc ${sources} ${headers})
+add_executable(BuildTest BuildTest.cpp ${sources} ${headers})
 target_link_libraries(BuildTest ${Geant4_LIBRARIES})
 
 # Install executable to 'bin' directory under CMAKE_INSTALL_PREFIX
