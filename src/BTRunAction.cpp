@@ -57,22 +57,23 @@ void BTRunAction::EndOfRunAction(const G4Run* run)
     const G4double edep2 = fEdep2.GetValue();
 
     const G4double edepAvg = edep2 - edep * edep / nofEvents;
+    G4double rmsEdep;
     if (edepAvg > 0.) rmsEdep = std::sqrt(edepAvg); else rmsEdep = 0.;
 
     const BTDetectorConstruction* detectorConstruction
-        = static_cast<const BTDetectorConstrcution*>
-        (G4RunManager::GetRunManager()->GerUserDetectorConstruction());
+        = static_cast<const BTDetectorConstruction*>
+        (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
     const G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
     const G4double dose = edep / mass;
     const G4double rmsDose = rmsEdep / mass;
 
     auto generatorAction
         = static_cast<const BTPrimaryGeneratorAction*>
-        (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAcion());
+        (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
     G4String runCondition;
     if (generatorAction)
     {
-        const G4ParticleGun* particleGun = generatorAction->GetParticleGun();
+        const G4ParticleGun* particleGun = generatorAction->GetParticleGun(); // Gets the fparticle gun (gamma particle)
         runCondition += particleGun->GetParticleDefinition()->GetParticleName();
         runCondition += " of ";
         G4double particleEnergy = particleGun->GetParticleEnergy();
