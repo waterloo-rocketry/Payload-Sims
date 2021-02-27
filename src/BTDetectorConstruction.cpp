@@ -46,6 +46,9 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 	const G4double world_sizeX = 20 * cm;
 	const G4double world_sizeY = 20 * cm;
 	const G4double world_sizeZ = 30 * cm;
+
+    G4bool checkOverlaps = true;
+
 	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
     G4Box* solidWorld =
@@ -69,7 +72,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
 	// Scintillator Parameters
 	G4double sc_sizeXY = 2 * cm, sc_sizeZ = 1 * cm; //20x20x10 mm
-	G4Material* sc_mat = nist->FindBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
+	G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
 
     G4Box* scint =
         new G4Box("Scintillator",   //name

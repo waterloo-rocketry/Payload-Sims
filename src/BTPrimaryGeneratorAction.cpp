@@ -34,8 +34,6 @@ BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     G4int n_particle2 = 1;
     nParticleGun = new G4ParticleGun(n_particle2);
 
-    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4String particleName;
     G4ParticleDefinition* particle2
         = particleTable->FindParticle(particleName = "neutron");
     nParticleGun->SetParticleDefinition(particle);
