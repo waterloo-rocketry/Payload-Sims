@@ -204,12 +204,31 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
     
-    height += sc_sizeZ;
-    
     //Scint Holder
-    /*G4Box *outerHolder = new G4Box("Holder - Outer Rim", 0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * sc_sizeZ);
-    G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", outerHolder, innerHolder);
-    */
+    G4Box *outerHolder = new G4Box("Holder - Outer Rim", 0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * sc_sizeZ);
+    G4SubtractionSolid *s1 = new G4SubtractionSolid("Temp Holder 1", outerHolder, scint_1, 0, 
+            G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, 0 * mm));
+    G4SubtractionSolid *s2 = new G4SubtractionSolid("Temp Holder 2", s1, scint_2, 0, 
+            G4ThreeVector(0.5*38 * mm, -0.5*32 * mm, 0 * mm));        
+    G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", s2, scint_3, 0, 
+            G4ThreeVector(0.5*(-40 * mm), 0 * mm, 0 * mm));
+
+     G4LogicalVolume* logicHolder =
+        new G4LogicalVolume(Holder,         //scint is solid
+            PLA,                        //material (temporarily PLA)
+            "Holder");               //name
+
+    G4VPhysicalVolume* physHolder = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0,0, height + 0.5*sc_sizeZ),         //at origin
+            logicHolder,              //logical volume
+            "Holder",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+    height += sc_sizeZ;
     //Gasket (Upper)
     G4Box* gsk_u_1 =
         new G4Box("Upper Gasket",   //name
