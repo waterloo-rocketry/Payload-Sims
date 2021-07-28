@@ -72,85 +72,186 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             checkOverlaps);        //check for any overlaps
 
 	// Scintillator Parameters
-	G4double sc_sizeX = 35 * mm, sc_sizeY = 30 * mm, sc_sizeZ = 75 * mm; //20x20x10 mm
+	G4double sc_sizeX = 35 * mm, sc_sizeY = 30 * mm, sc_sizeZ = 75 * mm;
+
+    //Board Parameters
+    G4double b_sizeX = 88 * mm, b_sizeY = 80 * mm, b_sizeZ = 2 * mm;
+
 	G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
-    
-    G4Material* abs = new G4Material(
-        "ABS Plastic",
-        1.0 * g/cm3,
-        3,
+    G4Material* pcb = nist->FindOrBuildMaterial("G4_Al"); // Temporarily Aluminium
+    G4Material* gsk = nist->FindOrBuildMaterial("G4_Al"); // Temporarily Aluminium
+    G4Material* alum_metal = nist->FindOrBuildMaterial("G4_Al"); // Aluminium
+    G4Material* PLA = new G4Material(
+        "PLA Plastic",
+        1.25 * kg/cm3,
+        4,
         kStateSolid, // Conditions in space
         225. * kelvin,
         0.01 * atmosphere
     );
 
 	G4Element* C = nist->FindOrBuildElement("C"); 
-    abs->AddElement(C, 15);
+    PLA->AddElement(C, 3);
 	G4Element* H = nist->FindOrBuildElement("H"); 
-    abs->AddElement(H, 17);
+    PLA->AddElement(H, 4);
+	G4Element* O = nist->FindOrBuildElement("O"); 
+    PLA->AddElement(H, 2);
 	G4Element* N = nist->FindOrBuildElement("N"); 
-    abs->AddElement(N, 1);
+    PLA->AddElement(N, 1);
 
-    /*G4Box *outerHolder = new G4Box("Holder - Outer Rim", 36*mm, 36*mm, 10*mm);
-    G4Box *innerHolder = new G4Box("Holder - Inner Rim", 25*mm, 25*mm, 10*mm);
-    G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", outerHolder, innerHolder);*/
+    //One Module at the Center, from bottom to top
+    G4double height = 0 * mm;
 
+    //PCB
     G4Box* pcb_1 =
         new G4Box("PCB",   //name
-            sc_sizeX, sc_sizeY, 2*mm); //size
+            0.5*b_sizeX, 0.5*b_sizeY, 0.5*2.54 * mm); //size
 
     G4LogicalVolume* logicpcb_1 =
         new G4LogicalVolume(pcb_1,         //scint is solid
-            sc_mat,                        //material
+            pcb,                        //material
             "PCB");               //name
 
     G4VPhysicalVolume* physpcb_1 = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(0,0,71*mm),         //at origin
-            logicpcb_1,                 //logical volume
-            "PCB",          //name
+            G4ThreeVector(),         //at origin
+            logicpcb_1,              //logical volume
+            "PCB",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+    height = 0.5*2.54 * mm;
+
+    //Gasket (Lower)
+    G4Box* gsk_l_1 =
+        new G4Box("Lower Gasket",   //name
+            0.5*b_sizeX, 0.5*b_sizeY, 0.5*b_sizeZ); //size
+
+    G4LogicalVolume* logicgsk_l_1 =
+        new G4LogicalVolume(gsk_l_1,         //scint is solid
+            PLA,                        //material (temporarily PLA)
+            "Lower Gasket");               //name
+
+    G4VPhysicalVolume* physgsk_l_1 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0,0, height + 0.5 * b_sizeZ),         //dist from center (center of the top face)
+            logicgsk_l_1,              //logical volume
+            "Lower Gasket",                   //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
     
+    height += b_sizeZ;
+
+    //Scint
     G4Box* scint_1 =
         new G4Box("Scintillator",   //name
-            sc_sizeX, sc_sizeY, sc_sizeZ); //size
+            0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*sc_sizeZ); //size
 
     G4LogicalVolume* logicsc_1 =
         new G4LogicalVolume(scint_1,         //scint is solid
-            abs,                            //material (Placeholder ABS, not actually)
-            "Scintillator");               //name
+            sc_mat,                            //material (Placeholder ABS, not actually)
+            "Scintillator 1");               //name
 
     G4VPhysicalVolume* physScint_1 = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(),         //at origin
+            G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, height + 0.5*sc_sizeZ),         //at origin
             logicsc_1,                 //logical volume
-            "Scintillator",          //name
+            "Scintillator 1",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
 
     G4Box* scint_2 =
-        new G4Box("Scintillator",   //name
-            sc_sizeX, sc_sizeY, sc_sizeZ); //size
+        new G4Box("Scintillator 2",   //name
+            0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*sc_sizeZ); //size
 
     G4LogicalVolume* logicsc_2 =
         new G4LogicalVolume(scint_2,         //scint is solid
             sc_mat,                        //material
-            "Scintillator");               //name
+            "Scintillator 2");               //name
 
     G4VPhysicalVolume* physScint_2 = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(80*mm,0,0),         //at origin
+            G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + 0.5*sc_sizeZ),         //at origin
             logicsc_2,                 //logical volume
-            "Scintillator",          //name
+            "Scintillator 2",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
-            checkOverlaps);          //check for any overlaps*/
+            checkOverlaps);          //check for any overlaps
+
+    G4Box* scint_3 =
+        new G4Box("Scintillator 3",   //name
+            0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*sc_sizeZ); //size
+
+    G4LogicalVolume* logicsc_3 =
+        new G4LogicalVolume(scint_3,         //scint is solid
+            sc_mat,                        //material
+            "Scintillator 3");               //name
+
+    G4VPhysicalVolume* physScint_3 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*(-40 * mm), 0, height + 0.5*sc_sizeZ),         //at origin
+            logicsc_3,                 //logical volume
+            "Scintillator 3",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    height += sc_sizeZ;
+    
+    //Scint Holder
+    /*G4Box *outerHolder = new G4Box("Holder - Outer Rim", 0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * sc_sizeZ);
+    G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", outerHolder, innerHolder);
+    */
+    //Gasket (Upper)
+    G4Box* gsk_u_1 =
+        new G4Box("Upper Gasket",   //name
+            0.5*b_sizeX, 0.5*b_sizeY, 0.5*b_sizeZ); //size
+
+    G4LogicalVolume* logicgsk_u_1 =
+        new G4LogicalVolume(gsk_u_1,         //scint is solid
+            PLA,                        //material (temporarily PLA)
+            "Upper Gasket");               //name
+
+    G4VPhysicalVolume* physgsk_u_1 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0,0, height + 0.5*b_sizeZ),         //at origin
+            logicgsk_u_1,              //logical volume
+            "Upper Gasket",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    height += b_sizeZ;
+
+    //Lid
+    G4Box* lid_1 =
+        new G4Box("Lid",   //name
+            0.5*b_sizeX, 0.5*b_sizeY, 0.5*b_sizeZ); //size
+
+    G4LogicalVolume* logiclid_1 =
+        new G4LogicalVolume(lid_1,         //scint is solid
+            alum_metal,                        //material
+            "Lid");               //name
+
+    G4VPhysicalVolume* physlid_1 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0,0, height + 0.5*b_sizeZ),         //at origin
+            logiclid_1,              //logical volume
+            "Lid",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
     fScoringVolume = logicsc_1;
 
     return physWorld;
