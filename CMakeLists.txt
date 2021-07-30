@@ -15,9 +15,7 @@ include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Locate sources and headers
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 # Add executable and link to G4 libraries

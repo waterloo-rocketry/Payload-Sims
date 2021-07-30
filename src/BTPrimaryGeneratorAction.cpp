@@ -34,8 +34,6 @@ BTPrimaryGeneratorAction::BTPrimaryGeneratorAction()
     G4int n_particle2 = 1;
     nParticleGun = new G4ParticleGun(n_particle2);
 
-    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4String particleName;
     G4ParticleDefinition* particle2
         = particleTable->FindParticle(particleName = "neutron");
     nParticleGun->SetParticleDefinition(particle);
@@ -73,8 +71,9 @@ void BTPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (envLV) fEnvelopeBox = dynamic_cast<G4Box*>(envLV->GetSolid());
     }
 
-    const G4double x0 = size * envSizeXY * (G4UniformRand() 1);
-    const G4double yo = size * envSizeXY * (G4UniformRand() 1);
+    G4double size = 0.8; 
+    const G4double x0 = size * envSizeXY * (G4UniformRand()-1); // Assuming - 1
+    const G4double y0 = size * envSizeXY * (G4UniformRand()-1);
     const G4double z0 = 1 * envSizeZ;
 
     fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
