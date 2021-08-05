@@ -75,6 +75,12 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 	G4Element* H = nist->FindOrBuildElement("H"); 
 	G4Element* O = nist->FindOrBuildElement("O"); 
 	G4Element* Si = nist->FindOrBuildElement("Si");
+    G4Element* Mg = nist->FindOrBuildElement("Mg");
+    G4Element* Cr = nist->FindOrBuildElement("Cr");
+    G4Element* Al = nist->FindOrBuildElement("Al");
+    G4Element* Cu = nist->FindOrBuildElement("Cu");
+    G4Element* Fe = nist->FindOrBuildElement("Fe");
+    G4Element* Mn = nist->FindOrBuildElement("Mn");
 
 	G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
     G4Material* pp7628 = new G4Material(
@@ -101,6 +107,18 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     PLA->AddElement(C, 3);
     PLA->AddElement(H, 4);
     PLA->AddElement(O, 2);
+
+    G4Material* Alum6061_T6 = new G4Material("6061 Aluminium T6", 2.7 * g/cm3, 5); 
+    Alum6061_T6->AddElement(Al, 97.25*perCent); //Source: http://asm.matweb.com/search/SpecificMaterial.asp?bassnum=MA6061T 
+    Alum6061_T6->AddElement(Mg, 1.2*perCent);
+    Alum6061_T6->AddElement(Cr, 0.35*perCent);
+    Alum6061_T6->AddElement(Cu, 0.4*perCent);
+    Alum6061_T6->AddElement(Si, 0.8*perCent);
+
+    G4Material* Steel1010 = new G4Material("ANSI Steel 1010", 7.87 * g/cm3, 3);
+    Steel1010->AddElement(Fe, 99.3*perCent); //Source: https://www.azom.com/article.aspx?ArticleID=6539    
+    Steel1010->AddElement(Mn, 0.6*perCent);
+    Steel1010->AddElement(C, 0.1*perCent);
 
     //Geometry Definition
     //Scint Module
@@ -151,9 +169,9 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             G4ThreeVector(0.5*(-40 * mm), 0 * mm, 0 * mm)); //Use this one for the actual holder
 
     //Strut/Cover Panel Dimensions
-    G4double strutThick = 8.5 * mm, strutLength = 100 * mm, strutHeight = 327.5 * mm; topstrutHeight = 10 * mm
+    G4double strutThick = 8.5 * mm, strutLength = 100 * mm, strutHeight = 327.5 * mm, topstrutHeight = 10 * mm;
     G4double cpThick = 2.66 * mm, cpLength = 83 * mm, cpHeight = 307.5 * mm;
-    G4double topPanelCut = 70 * mm, 
+    G4double topPanelCut = 70 * mm;
 
     G4Box *outerStrut = new G4Box("Outer Strut", 0.5 * strutThick, 0.5 * strutLength, 0.5 * strutHeight);
     G4Box *strutCutOut = new G4Box("Strut Cutout", 0.5 * strutThick, 0.5 * cpLength, 0.5 * cpHeight);
@@ -169,8 +187,6 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4SubtractionSolid *topPanel = new G4SubtractionSolid("Top Panel", OutertopPanel, tpCutOut, 0, 
             G4ThreeVector(0.5 * cpLength, 0.5 * strutLength, 0.5 * topstrutHeight)); //Use this one for the actual holder, cut out from center
     
-
-
     //Logical Volumes (mat defns)
     G4LogicalVolume* logicpcb_tb =
         new G4LogicalVolume(pcb_tb,         //scint is solid
@@ -538,7 +554,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
     height += b_sizeZ;
 
-    G4VPhysicalVolume* physCP_1 = 
+    /*G4VPhysicalVolume* physCP_1 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(placeholder, placeholder, -127.5 * mm + 0.5*sc_sizeZ),//at origin
             logicsc,                 //logical volume
@@ -547,6 +563,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
+    */
     
     fScoringVolume = logicsc;
 
