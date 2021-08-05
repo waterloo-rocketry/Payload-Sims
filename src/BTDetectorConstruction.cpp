@@ -102,19 +102,15 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     PLA->AddElement(H, 4);
     PLA->AddElement(O, 2);
 
-    // Scintillator Dimensions
-	G4double sc_sizeX = 35 * mm, sc_sizeY = 30 * mm, sc_sizeZ = 75 * mm;
-
-    //Lid/Gasket Dimensions
-    G4double b_sizeX = 88 * mm, b_sizeY = 80 * mm, b_sizeZ = 2 * mm;
-
-    //PCB Dimensions
-    G4double pcbtb_Z = 0.035 * mm, pcbpp_Z = 0.2 * mm, pcbcore_Z = 1.1 * mm;
-    //One Module at the Center, from bottom to top
-    G4double height = 0 * mm;
-
     //Geometry Definition
     //Scint Module
+
+    //Lid/Gasket/PCB Dimensions
+    G4double b_sizeX = 88 * mm, b_sizeY = 80 * mm, b_sizeZ = 2 * mm;
+
+    //PCB Thickness
+    G4double pcbtb_Z = 0.035 * mm, pcbpp_Z = 0.2 * mm, pcbcore_Z = 1.1 * mm;
+
     G4Box* pcb_tb =
         new G4Box("PCB T/B",   //name
             0.5*b_sizeX, 0.5*b_sizeY, 0.5*pcbtb_Z); //size
@@ -139,18 +135,41 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
         new G4Box("Holder Bottom", //name (The bottom layer of the holder that actually occpies where SiPM is)
             0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * 9.5 * mm); //size
 
+    // Scintillator Dimensions
+	G4double sc_sizeX = 35 * mm, sc_sizeY = 30 * mm, sc_sizeZ = 75 * mm;
+
     G4Box* scint =
         new G4Box("Scintillator",   //name
             0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*sc_sizeZ); //size
 
     G4Box *outerHolder = new G4Box("Holder - Outer Rim", 0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * sc_sizeZ);
-    
     G4SubtractionSolid *s1 = new G4SubtractionSolid("Temp Holder 1", outerHolder, scint, 0, 
             G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, 0 * mm));
     G4SubtractionSolid *s2 = new G4SubtractionSolid("Temp Holder 2", s1, scint, 0, 
             G4ThreeVector(0.5*38 * mm, -0.5*32 * mm, 0 * mm));        
     G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", s2, scint, 0, 
             G4ThreeVector(0.5*(-40 * mm), 0 * mm, 0 * mm)); //Use this one for the actual holder
+
+    //Strut/Cover Panel Dimensions
+    G4double strutThick = 8.5 * mm, strutLength = 100 * mm, strutHeight = 327.5 * mm; topstrutHeight = 10 * mm
+    G4double cpThick = 2.66 * mm, cpLength = 83 * mm, cpHeight = 307.5 * mm;
+    G4double topPanelCut = 70 * mm, 
+
+    G4Box *outerStrut = new G4Box("Outer Strut", 0.5 * strutThick, 0.5 * strutLength, 0.5 * strutHeight);
+    G4Box *strutCutOut = new G4Box("Strut Cutout", 0.5 * strutThick, 0.5 * cpLength, 0.5 * cpHeight);
+    G4SubtractionSolid *strut = new G4SubtractionSolid("CubeSat Strut", outerStrut, strutCutOut, 0, 
+            G4ThreeVector(0.5 * strutThick, 0.5 * strutLength, 0.5 * strutHeight)); //Use this one for the actual holder, cut out from center
+    
+    G4Box* cpanel =
+        new G4Box("Cover Panel",   //name
+            0.5*cpThick, 0.5*cpLength, 0.5*cpHeight); //size
+    
+    G4Box* OutertopPanel = new G4Box("Outer Top Panel", 0.5 * cpLength, 0.5 * strutLength, 0.5 * topstrutHeight);
+    G4Box *tpCutOut = new G4Box("Top Panel Cutout", 0.5 * topPanelCut, 0.5 * topPanelCut, 0.5 * topstrutHeight);
+    G4SubtractionSolid *topPanel = new G4SubtractionSolid("Top Panel", OutertopPanel, tpCutOut, 0, 
+            G4ThreeVector(0.5 * cpLength, 0.5 * strutLength, 0.5 * topstrutHeight)); //Use this one for the actual holder, cut out from center
+    
+
 
     //Logical Volumes (mat defns)
     G4LogicalVolume* logicpcb_tb =
@@ -199,6 +218,10 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             "Lid");               //name
 
     //Physical Definition
+    
+    //Lower Module at the Center, from bottom to top
+    G4double height = 0 * mm;
+
     //Lower Module
     G4VPhysicalVolume* physpcb_b1 = 
         new G4PVPlacement(0,         //no rotation
@@ -515,7 +538,15 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
     height += b_sizeZ;
 
-
+    G4VPhysicalVolume* physCP_1 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(placeholder, placeholder, -127.5 * mm + 0.5*sc_sizeZ),//at origin
+            logicsc,                 //logical volume
+            "Scintillator 6",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
     
     fScoringVolume = logicsc;
 
