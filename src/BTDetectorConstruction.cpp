@@ -168,24 +168,25 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", s2, scint, 0, 
             G4ThreeVector(0.5*(-40 * mm), 0 * mm, 0 * mm)); //Use this one for the actual holder
 
-    //Strut/Cover Panel Dimensions
-    G4double strutThick = 8.5 * mm, strutLength = 100 * mm, strutHeight = 327.5 * mm, topstrutHeight = 10 * mm;
+    //Front/Back Face / Cover Panel Dimensions
+    G4double railThick = 8.5 * mm, railLength = 100 * mm, railHeight = 327.5 * mm, topRailHeight = 10 * mm;
     G4double cpThick = 2.66 * mm, cpLength = 83 * mm, cpHeight = 307.5 * mm;
-    G4double topPanelCut = 70 * mm;
+    G4double topFaceCut = 70 * mm;
 
-    G4Box *outerStrut = new G4Box("Outer Strut", 0.5 * strutThick, 0.5 * strutLength, 0.5 * strutHeight);
-    G4Box *strutCutOut = new G4Box("Strut Cutout", 0.5 * strutThick, 0.5 * cpLength, 0.5 * cpHeight);
-    G4SubtractionSolid *strut = new G4SubtractionSolid("CubeSat Strut", outerStrut, strutCutOut, 0, 
-            G4ThreeVector(0.5 * strutThick, 0.5 * strutLength, 0.5 * strutHeight)); //Use this one for the actual holder, cut out from center
+    G4Box *outerFBFace = new G4Box("Outer FBFace", 0.5 * railThick, 0.5 * railLength, 0.5 * railHeight);
+    G4Box *FBFaceCutOut = new G4Box("FBFace Cutout", 0.5 * railThick, 0.5 * cpLength, 0.5 * cpHeight);
+    G4SubtractionSolid *FBFace = new G4SubtractionSolid("CubeSat FBFace", outerFBFace, FBFaceCutOut, 0, 
+            G4ThreeVector(0,0,0));
+            //G4ThreeVector(0.5 * railThick, 0.5 * railLength, 0.5 * railHeight)); //Use this one for the actual holder, cut out from center
     
     G4Box* cpanel =
         new G4Box("Cover Panel",   //name
             0.5*cpThick, 0.5*cpLength, 0.5*cpHeight); //size
     
-    G4Box* OutertopPanel = new G4Box("Outer Top Panel", 0.5 * cpLength, 0.5 * strutLength, 0.5 * topstrutHeight);
-    G4Box *tpCutOut = new G4Box("Top Panel Cutout", 0.5 * topPanelCut, 0.5 * topPanelCut, 0.5 * topstrutHeight);
-    G4SubtractionSolid *topPanel = new G4SubtractionSolid("Top Panel", OutertopPanel, tpCutOut, 0, 
-            G4ThreeVector(0.5 * cpLength, 0.5 * strutLength, 0.5 * topstrutHeight)); //Use this one for the actual holder, cut out from center
+    G4Box* OutertopFace = new G4Box("Outer Top Face", 0.5 * cpLength, 0.5 * railLength, 0.5 * topRailHeight);
+    G4Box *tfCutOut = new G4Box("Top Face Cutout", 0.5 * topFaceCut, 0.5 * topFaceCut, 0.5 * topRailHeight);
+    G4SubtractionSolid *topFace = new G4SubtractionSolid("Top Panel", OutertopFace, tfCutOut, 0, 
+            G4ThreeVector(0,0,0)); //Use this one for the actual holder, cut out from center
     
     //Logical Volumes (mat defns)
     G4LogicalVolume* logicpcb_tb =
@@ -233,11 +234,27 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             alum_metal,                        //material
             "Lid");               //name
 
+    G4LogicalVolume* logicFBFace =
+        new G4LogicalVolume(FBFace,         //scint is solid
+            Alum6061_T6,                        //material
+            "Front/Back Face");               //name
+    
+    G4LogicalVolume* logiccpanel =
+        new G4LogicalVolume(cpanel,         //scint is solid
+            Steel1010,                        //material
+            "Cover Panel");               //name
+
+    G4LogicalVolume* logictface =
+        new G4LogicalVolume(topFace,         //scint is solid
+            alum_metal,                        //material
+            "Top Face");               //name
+
     //Physical Definition
     
     //Lower Module at the Center, from bottom to top
     G4double height = 0 * mm;
 
+    ///*
     //Lower Module
     G4VPhysicalVolume* physpcb_b1 = 
         new G4PVPlacement(0,         //no rotation
@@ -357,6 +374,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             checkOverlaps);          //check for any overlaps
     
     //Scint Holder
+    
     G4VPhysicalVolume* physHolder_1 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0,0, height + 0.5*sc_sizeZ),         //at origin
@@ -368,7 +386,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             checkOverlaps);          //check for any overlaps
 
     height += sc_sizeZ;
-
+    
     //Gasket (Upper)
     G4VPhysicalVolume* physgsk_u_1 = 
         new G4PVPlacement(0,         //no rotation
@@ -516,6 +534,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             checkOverlaps);          //check for any overlaps
     
     //Scint Holder
+    
     G4VPhysicalVolume* physHolder_2 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0,0, height + 0.5*sc_sizeZ),         //at origin
@@ -525,7 +544,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
-
+    
     height += sc_sizeZ;
 
     //Gasket (Upper)
@@ -554,17 +573,91 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
     height += b_sizeZ;
 
-    /*G4VPhysicalVolume* physCP_1 = 
+    height += 10 * mm; // from top of lid to bottom of Top FBFace Panel
+    //*/
+
+    // Top Face
+    G4VPhysicalVolume* phystface = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(placeholder, placeholder, -127.5 * mm + 0.5*sc_sizeZ),//at origin
-            logicsc,                 //logical volume
-            "Scintillator 6",          //name
+            G4ThreeVector(0,0, height + 0.5*topRailHeight),         //at origin
+            logictface,              //logical volume
+            "Top Face",                   //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
-    */
     
+    //Side Cover Panel: Off (outwards) on the Y-axis for ~0.5 mm, but I am overlooking it for now
+    //Rotate around Z-axis
+    G4RotationMatrix* rotationMatrix = new G4RotationMatrix();
+    rotationMatrix->rotateZ(90.*deg);
+    
+    G4VPhysicalVolume* physlcpanel = 
+        new G4PVPlacement(rotationMatrix,         //no rotation
+            G4ThreeVector(0, 0.5*railLength, height - 0.5*cpHeight),         //at origin
+            logiccpanel,              //logical volume
+            "Left Cover Panel",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    fScoringVolume = logicsc;
+
+    G4VPhysicalVolume* physrcpanel = 
+        new G4PVPlacement(rotationMatrix,         //no rotation
+            G4ThreeVector(0, -0.5*railLength, height - 0.5*cpHeight),         //at origin
+            logiccpanel,              //logical volume
+            "Right Cover Panel",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+    //*/
+
+    height += topRailHeight;
+    // Front Face
+    G4VPhysicalVolume* physfface = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*cpLength + 0.5 * railThick,0, height - 0.5 * railHeight),         //at origin
+            logicFBFace,              //logical volume
+            "Front Face",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    G4VPhysicalVolume* physfcpanel = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector((0.5*railThick-0.5*cpThick) + 0.5*cpLength + 0.5 * railThick, 0, height - topRailHeight - 0.5 * cpHeight),         //at origin
+            logiccpanel,              //logical volume
+            "Front Cover Panel",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+    //Back Face
+    G4VPhysicalVolume* physbface = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(-(0.5*cpLength + 0.5 * railThick),0, height - 0.5 * railHeight),         //at origin
+            logicFBFace,              //logical volume
+            "Back Face",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    G4VPhysicalVolume* physbcpanel = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(-(0.5*railThick-0.5*cpThick) - (0.5*cpLength + 0.5 * railThick), 0, height - topRailHeight - 0.5 * cpHeight),         //at origin
+            logiccpanel,              //logical volume
+            "Back Cover Panel",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
     fScoringVolume = logicsc;
 
     return physWorld;
