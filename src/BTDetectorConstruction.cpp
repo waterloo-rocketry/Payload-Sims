@@ -26,6 +26,7 @@
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
+#include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
@@ -49,7 +50,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 	// World Parameters
 	const G4double world_sizeX = 20 * cm;
 	const G4double world_sizeY = 20 * cm;
-	const G4double world_sizeZ = 30 * cm;
+	const G4double world_sizeZ = 300 * cm;
 	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
     G4Box* solidWorld =
@@ -120,6 +121,8 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     Steel1010->AddElement(Mn, 0.6*perCent);
     Steel1010->AddElement(C, 0.1*perCent);
 
+    G4Material* bodytubeMaterial = Alum6061_T6;
+
     //Geometry Definition
     //Scint Module
 
@@ -188,6 +191,13 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4SubtractionSolid *topFace = new G4SubtractionSolid("Top Panel", OutertopFace, tfCutOut, 0, 
             G4ThreeVector(0,0,0)); //Use this one for the actual holder, cut out from center
     
+    G4double tubeOuter = 76.2 * mm, tubeInner = 74.6015 * mm, couplerR = 69.85 * mm; //radius
+    G4double btPZ = (16.28*mm + railHeight), btRZ = 381*mm, coupZ = 7.94*mm;
+    G4VSolid* btP = new G4Tubs("Body Tube - Payload", tubeInner, tubeOuter, 0.5*btPZ, 0, 360*deg);  
+    G4VSolid* btR = new G4Tubs("Body Tube - Recovery", tubeInner, tubeOuter, 0.5*btRZ, 0, 360*deg);
+    G4VSolid* coupler = new G4Tubs("Coupler", 0, tubeOuter, 0.5*coupZ, 0, 360*deg);  
+
+
     //Logical Volumes (mat defns)
     G4LogicalVolume* logicpcb_tb =
         new G4LogicalVolume(pcb_tb,         //scint is solid
@@ -248,6 +258,21 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
         new G4LogicalVolume(topFace,         //scint is solid
             alum_metal,                        //material
             "Top Face");               //name
+
+    G4LogicalVolume* logicbtP =
+        new G4LogicalVolume(btP,         //scint is solid
+            bodytubeMaterial,                        //material
+            "Body Tube - Payload");               //name
+
+    G4LogicalVolume* logicbtR =
+        new G4LogicalVolume(btR,         //scint is solid
+            bodytubeMaterial,                        //material
+            "Body Tube - Payload");               //name
+
+    G4LogicalVolume* logicCoupler =
+        new G4LogicalVolume(coupler,         //scint is solid
+            Alum6061_T6,                        //material
+            "Coupler");               //name
 
     //Physical Definition
     
@@ -574,7 +599,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     height += b_sizeZ;
 
     height += 10 * mm; // from top of lid to bottom of Top FBFace Panel
-    //*/
+    //
 
     // Top Face
     G4VPhysicalVolume* phystface = 
@@ -612,8 +637,6 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
-
-    //*/
 
     height += topRailHeight;
     // Front Face
@@ -657,6 +680,41 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
+
+    height += 16.28 * mm;
+    
+    G4VPhysicalVolume* physbtP = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0, 0, height - 0.5 * btPZ),         //at origin
+            logicbtP,              //logical volume
+            "Body Tube - Payload",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+    G4VPhysicalVolume* physbtR = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0, 0, height + 0.5 * btRZ),         //at origin
+            logicbtR,              //logical volume
+            "Body Tube - Recovery",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    height += btRZ;
+
+    G4VPhysicalVolume* physCoupler = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0, 0, height + 0.5 * coupZ),         //at origin
+            logicCoupler,              //logical volume
+            "Coupler",                   //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
 
     fScoringVolume = logicsc;
 
