@@ -121,7 +121,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     Steel1010->AddElement(Mn, 0.6*perCent);
     Steel1010->AddElement(C, 0.1*perCent);
 
-    G4Material* bodytubeMaterial = Alum6061_T6;
+    G4Material* bodytubeMaterial = pp7628; //S-2 Glass Fiber
 
     //Geometry Definition
     //Scint Module
