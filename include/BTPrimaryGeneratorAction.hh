@@ -4,10 +4,10 @@
 #pragma once
 
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
+#include "G4GeneralParticleSource.hh"
 #include "globals.hh"
 
-class G4ParticleGun;
+class G4GeneralParticleSource;
 class G4Event;
 class G4Box;
 
@@ -19,9 +19,8 @@ public:
 
 	virtual void GeneratePrimaries(G4Event*);
 
-	const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
-	G4ParticleGun* fParticleGun;
+	const G4GeneralParticleSource* GetParticleGun() const { return generalParticleSource; }
+	G4GeneralParticleSource* generalParticleSource;
 
-	G4ParticleGun* nParticleGun;
 	G4Box* fEnvelopeBox;
 };

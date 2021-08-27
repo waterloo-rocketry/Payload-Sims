@@ -2,7 +2,7 @@
 /// \brief Implementation of the BTDetectorConstruction class
 
 
-//Next Step: Add an aluminium cover panel on top of the scintillator with the thickness of 2.38 mm and 
+//Next Step: Add an aluminium cover panel on top of the scintillator with the thickness of 2.38 mm and
 
 // Presumably something like this to define the material if needed.
 
@@ -11,12 +11,12 @@
 // #include "G4Element.hh"
 // #include "G4ElementTable.hh"
 // ......
-// G4Material* Al = 
+// G4Material* Al =
 // new G4Material("Aluminium", z=13., a= 26.98*g/mole, density= 2.7*g/cm3);
 
 //Alternatively "G4_Al" can be used as a pre-defined material.
 
-// Geometry-wise G4Box/G4PolyHedra should be enough to build the shape with the addition of 
+// Geometry-wise G4Box/G4PolyHedra should be enough to build the shape with the addition of
 // G4UnionSolid, G4SubtractionSolid, G4IntersectionSolid.
 // http://geant4.in2p3.fr/IMG/pdf_Lecture-Geometry.pdf
 
@@ -43,9 +43,9 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 	G4NistManager* nist = G4NistManager::Instance();
 
 	// World Parameters
-	const G4double world_sizeX = 20 * cm;
-	const G4double world_sizeY = 20 * cm;
-	const G4double world_sizeZ = 30 * cm;
+	const G4double world_sizeX = 100 * cm;
+	const G4double world_sizeY = 100 * cm;
+	const G4double world_sizeZ = 100 * cm;
 
     G4bool checkOverlaps = true;
 
@@ -53,7 +53,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
     G4Box* solidWorld =
         new G4Box("World",       // name
-            world_sizeX, world_sizeX, world_sizeZ);     // size
+            world_sizeX, world_sizeY, world_sizeZ);     // size
 
     G4LogicalVolume* logicWorld =
         new G4LogicalVolume(solidWorld,  // the world is solid
@@ -71,12 +71,12 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             checkOverlaps);        //check for any overlaps
 
 	// Scintillator Parameters
-	G4double sc_sizeXY = 2 * cm, sc_sizeZ = 1 * cm; //20x20x10 mm
+	G4double sc_sizeX = 50 * mm, sc_sizeY = 175 * mm, sc_sizeZ = 50 * mm; //20x20x10 mm
 	G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
 
     G4Box* scint =
         new G4Box("Scintillator",   //name
-            sc_sizeXY, sc_sizeXY, sc_sizeZ); //size
+            sc_sizeX, sc_sizeY, sc_sizeZ); //size
 
     G4LogicalVolume* logicsc =
         new G4LogicalVolume(scint,         //scint is solid
