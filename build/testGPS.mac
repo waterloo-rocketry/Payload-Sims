@@ -1,0 +1,40 @@
+# Macro testGPS.mac
+/control/verbose 0
+/tracking/verbose 0
+/event/verbose 0
+/gps/verbose 2
+
+#setting up the source
+/gps/pos/type Plane
+/gps/pos/shape Square
+/gps/pos/centre 0 0 40 cm
+/gps/pos/halfx 10 cm
+/gps/pos/halfy 20 cm
+
+#angles to be released
+/gps/ang/type cos
+/gps/ang/mintheta 0
+/gps/ang/maxtheta 3
+
+#energy characteristics
+/gps/ene/type Lin
+/gps/ene/gradient 1
+/gps/ene/intercept 1
+
+#Gamma particles
+/gps/particle gamma
+/gps/ene/min 0 MeV
+/gps/ene/max 100000 MeV
+/run/beamOn 44000
+
+#Thermal Neutrons
+/gps/particle neutron
+/gps/ene/min 0.020 eV
+/gps/ene/max 0.030 eV
+/run/beamOn 176
+
+#Fast Neutrons
+/gps/particle neutron
+/gps/ene/min 1 MeV
+/gps/ene/max 20 MeV
+/run/beamOn 286
