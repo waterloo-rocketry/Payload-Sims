@@ -82,29 +82,27 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4Element* Cu = nist->FindOrBuildElement("Cu");
     G4Element* Fe = nist->FindOrBuildElement("Fe");
     G4Element* Mn = nist->FindOrBuildElement("Mn");
-
+    G4Material* BunaN = new G4Material(
+        "Buna-N Rubber",
+        1.3 * g/cm3,
+        3);
+    BunaN -> AddElement(C, 7);
+    BunaN -> AddElement(H, 9);
+    BunaN -> AddElement(N, 1);
 	G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
     G4Material* pp7628 = new G4Material(
         "Pre-preg 7628",
         2.46 * g/cm3, //Borrowed from Wikipedia (S-2 Glass)
-        2,
-        kStateSolid, // Conditions in space
-        225. * kelvin,
-        0.01 * atmosphere
-    );
+        2);
     pp7628->AddElement(Si, 1);
     pp7628->AddElement(O, 2);
-    G4Material* gsk_mat = nist->FindOrBuildMaterial("G4_Al"); // Temporarily Aluminium
+    G4Material* gsk_mat = BunaN
     G4Material* alum_metal = nist->FindOrBuildMaterial("G4_Al"); // Aluminium
     G4Material* copper_metal = nist->FindOrBuildMaterial("G4_Cu"); // Copper
     G4Material* PLA = new G4Material(
         "PLA Plastic",
         1.25 * kg/cm3,
-        3,
-        kStateSolid, // Conditions in space
-        225. * kelvin,
-        0.01 * atmosphere
-    );
+        3);
     PLA->AddElement(C, 3);
     PLA->AddElement(H, 4);
     PLA->AddElement(O, 2);
