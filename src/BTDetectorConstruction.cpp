@@ -75,6 +75,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4Element* C = nist->FindOrBuildElement("C"); 
 	G4Element* H = nist->FindOrBuildElement("H"); 
 	G4Element* O = nist->FindOrBuildElement("O"); 
+    G4Element* N = nist->FindOrBuildElement("N");
 	G4Element* Si = nist->FindOrBuildElement("Si");
     G4Element* Mg = nist->FindOrBuildElement("Mg");
     G4Element* Cr = nist->FindOrBuildElement("Cr");
@@ -96,7 +97,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
         2);
     pp7628->AddElement(Si, 1);
     pp7628->AddElement(O, 2);
-    G4Material* gsk_mat = BunaN
+    G4Material* gsk_mat = BunaN;
     G4Material* alum_metal = nist->FindOrBuildMaterial("G4_Al"); // Aluminium
     G4Material* copper_metal = nist->FindOrBuildMaterial("G4_Cu"); // Copper
     G4Material* PLA = new G4Material(
