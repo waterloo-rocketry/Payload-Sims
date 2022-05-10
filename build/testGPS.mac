@@ -26,8 +26,8 @@
 
 #Gamma particles
 /gps/particle gamma
-/gps/ene/min 0 MeV
-/gps/ene/max 100000 MeV
+/gps/ene/min 10 keV
+/gps/ene/max 800 keV
 /run/beamOn 44000
 
 #Thermal Neutrons
