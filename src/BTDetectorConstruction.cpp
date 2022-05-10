@@ -74,7 +74,8 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
     G4Element* C = nist->FindOrBuildElement("C"); 
 	G4Element* H = nist->FindOrBuildElement("H"); 
-	G4Element* O = nist->FindOrBuildElement("O"); 
+	G4Element* O = nist->FindOrBuildElement("O");
+    G4Element* B = nist->FindOrBuildElement("B"); 
     G4Element* N = nist->FindOrBuildElement("N");
 	G4Element* Si = nist->FindOrBuildElement("Si");
     G4Element* Mg = nist->FindOrBuildElement("Mg");
@@ -83,6 +84,8 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4Element* Cu = nist->FindOrBuildElement("Cu");
     G4Element* Fe = nist->FindOrBuildElement("Fe");
     G4Element* Mn = nist->FindOrBuildElement("Mn");
+    G4Element* Gd = nist->FindOrBuildElement("Gd");
+
     G4Material* BunaN = new G4Material(
         "Buna-N Rubber",
         1.3 * g/cm3,
@@ -90,7 +93,49 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     BunaN -> AddElement(C, 7);
     BunaN -> AddElement(H, 9);
     BunaN -> AddElement(N, 1);
-	G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
+
+	//Scintillator Materials
+    G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); 
+
+    G4Material* BNNT = new G4Material(
+        "BNNT",
+        1.3 * g/cm3,
+        2);
+    BNNT->AddElement(B, 1);
+    BNNT->AddElement(N, 1);
+
+    G4Material* Gd2O3 = new G4Material(
+        "Gadolinium Oxide",
+        7.41 * g/cm3,
+        2);
+    Gd2O3->AddElement(Gd, 2);
+    Gd2O3->AddElement(O, 3);
+
+    G4Material* methyl_acrylate = new G4Material(
+        "Methyl Acrylate",
+        0.95 * g/cm3,
+        3);
+    methyl_acrylate->AddElement(C, 4); 
+    methyl_acrylate->AddElement(H, 6);
+    methyl_acrylate->AddElement(O, 2);
+    
+    G4Material* MO = new G4Material(
+        "MO",
+        (0.95 * 0.7 + 7.41 * 0.3) * g/cm3,
+        2);
+    
+    MO->AddMaterial(Gd2O3, 0.3);
+    MO->AddMaterial(methyl_acrylate, 0.7);
+    
+    G4Material* Cellulose = new G4Material(
+        "Cellulose",
+        1.5 * g/cm3,
+        3);
+    Cellulose->AddElement(C, 6);
+    Cellulose->AddElement(H, 10);
+    Cellulose->AddElement(O, 5);
+
+
     G4Material* pp7628 = new G4Material(
         "Pre-preg 7628",
         2.46 * g/cm3, //Borrowed from Wikipedia (S-2 Glass)
@@ -155,19 +200,41 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
         new G4Box("Holder Bottom", //name (The bottom layer of the holder that actually occpies where SiPM is)
             0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * 9.5 * mm); //size
 
+    //Enclosure
+
     // Scintillator Dimensions
 	G4double sc_sizeX = 35 * mm, sc_sizeY = 30 * mm, sc_sizeZ = 75 * mm;
+    G4double enclosure_sizeZ = sc_sizeZ + 0.5 * mm;
+
+    G4Box* enclosure = //not an actual object, just scint + layer, used for the solid subtraction underneath
+        new G4Box("Scintillator",   //name
+            0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*enclosure_sizeZ); //size
 
     G4Box* scint =
         new G4Box("Scintillator",   //name
             0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*sc_sizeZ); //size
+   
+    G4double mo_sizeZ = 0.1 * mm;
+    G4Box* mo_layer = 
+        new G4Box("MO - Acrylic",
+            0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*mo_sizeZ);
+    
+    G4double bnnt_sizeZ = 0.13 * mm;
+    G4Box* bnnt_layer = 
+        new G4Box("BNNT layer",
+            0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*bnnt_sizeZ);
+     
+    G4double paper_sizeZ = 0.05 * mm;
+    G4Box* parchment =
+        new G4Box("Parchment Paper",
+            0.5*sc_sizeX, 0.5*sc_sizeY, 0.5*paper_sizeZ);
 
-    G4Box *outerHolder = new G4Box("Holder - Outer Rim", 0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * sc_sizeZ);
-    G4SubtractionSolid *s1 = new G4SubtractionSolid("Temp Holder 1", outerHolder, scint, 0, 
+    G4Box *outerHolder = new G4Box("Holder - Outer Rim", 0.5 * b_sizeX, 0.5 * b_sizeY, 0.5 * enclosure_sizeZ);
+    G4SubtractionSolid *s1 = new G4SubtractionSolid("Temp Holder 1", outerHolder, enclosure, 0, 
             G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, 0 * mm));
-    G4SubtractionSolid *s2 = new G4SubtractionSolid("Temp Holder 2", s1, scint, 0, 
+    G4SubtractionSolid *s2 = new G4SubtractionSolid("Temp Holder 2", s1, enclosure, 0, 
             G4ThreeVector(0.5*38 * mm, -0.5*32 * mm, 0 * mm));        
-    G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", s2, scint, 0, 
+    G4SubtractionSolid *Holder = new G4SubtractionSolid("Holder", s2, enclosure, 0, 
             G4ThreeVector(0.5*(-40 * mm), 0 * mm, 0 * mm)); //Use this one for the actual holder
 
     //Front/Back Face / Cover Panel Dimensions
@@ -231,9 +298,29 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4LogicalVolume* logicsc =
         new G4LogicalVolume(scint,         //scint is solid
             sc_mat,                            //material (Placeholder ABS, not actually)
-            "Scintillator");                   //name
+            "Scintillator Scoring Volume");                   //name
+   
+    G4LogicalVolume* logicsc_duplicate = 
+        new G4LogicalVolume(scint,
+            sc_mat,
+            "Scintillator");
+
+    G4LogicalVolume* logic_bnnt = 
+        new G4LogicalVolume(bnnt_layer,
+            BNNT,
+            "BNNT layer");
     
-     G4LogicalVolume* logicHolder =
+    G4LogicalVolume* logic_mo = 
+        new G4LogicalVolume(mo_layer,
+            MO,
+            "MO layer");
+      
+    G4LogicalVolume* logicpaper =
+        new G4LogicalVolume(parchment,
+            Cellulose,
+            "Parchment Paper");
+
+    G4LogicalVolume* logicHolder =
         new G4LogicalVolume(Holder,         //scint is solid
             PLA,                        //material (temporarily PLA)
             "Holder");               //name
@@ -376,32 +463,94 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
-
+    
+    G4VPhysicalVolume* physPaper_1 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, height + sc_sizeZ + 0.5*paper_sizeZ),         //at origin
+            logicpaper,                 //logical volume
+            "Scintillator 1 - Paper",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
     G4VPhysicalVolume* physScint_2 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + 0.5*sc_sizeZ),         //at origin
-            logicsc,                 //logical volume
-            "Scintillator 2",          //name
+            logicsc_duplicate,                 //logical volume
+            "Scintillator 2",        //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    G4VPhysicalVolume* physMO_2_1 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + sc_sizeZ + 0.5*mo_sizeZ),         //at origin
+            logic_mo,                 //logical volume
+            "Scintillator 2 - MO - bottom",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
 
+    G4VPhysicalVolume* physPaper_2 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + sc_sizeZ + mo_sizeZ + 0.5 * paper_sizeZ),//at origin
+            logicpaper,                 //logical volume
+            "Scintillator 2 - Paper",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+
+    G4VPhysicalVolume* physMO_2_2 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + sc_sizeZ + 1.5* mo_sizeZ + paper_sizeZ), //at origin
+            logic_mo,                 //logical volume
+            "Scintillator 2 - MO - top",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+
     G4VPhysicalVolume* physScint_3 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*(-40 * mm), 0, height + 0.5*sc_sizeZ),         //at origin
-            logicsc,                 //logical volume
+            logicsc_duplicate,                 //logical volume
             "Scintillator 3",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
+   
+    G4VPhysicalVolume* physPaper_3 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + 0.5 * paper_sizeZ),         //at origin
+            logicpaper,                 //logical volume
+            "Scintillator 3 - Paper",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
     
+    G4VPhysicalVolume* physBNNT_3 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + paper_sizeZ + 0.5 * bnnt_sizeZ),   //at origin
+            logic_bnnt,                 //logical volume
+            "Scintillator 3 - BNNT",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+ 
     //Scint Holder
-    
     G4VPhysicalVolume* physHolder_1 = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(0,0, height + 0.5*sc_sizeZ),         //at origin
+            G4ThreeVector(0,0, height + 0.5*enclosure_sizeZ),         //at origin
             logicHolder,              //logical volume
             "Holder",                   //name
             logicWorld,              //mother volume
@@ -409,7 +558,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
 
-    height += sc_sizeZ;
+    height += enclosure_sizeZ;    
     
     //Gasket (Upper)
     G4VPhysicalVolume* physgsk_u_1 = 
@@ -530,28 +679,90 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4VPhysicalVolume* physScint_4 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, height + 0.5*sc_sizeZ),         //at origin
-            logicsc,                 //logical volume
+            logicsc_duplicate,                 //logical volume
             "Scintillator 4",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
-
+    
+    G4VPhysicalVolume* physPaper_4 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, height + sc_sizeZ + 0.5*paper_sizeZ),         //at origin
+            logicpaper,                 //logical volume
+            "Scintillator 4 - Paper",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
     G4VPhysicalVolume* physScint_5 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + 0.5*sc_sizeZ),         //at origin
-            logicsc,                 //logical volume
-            "Scintillator 5",          //name
+            logicsc_duplicate,                 //logical volume
+            "Scintillator 5",        //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    G4VPhysicalVolume* physMO_5_1 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + sc_sizeZ + 0.5*mo_sizeZ),         //at origin
+            logic_mo,                 //logical volume
+            "Scintillator 5 - MO - bottom",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
 
+    G4VPhysicalVolume* physPaper_5 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + sc_sizeZ + mo_sizeZ + 0.5 * paper_sizeZ),//at origin
+            logicpaper,                 //logical volume
+            "Scintillator 5 - Paper",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+
+    G4VPhysicalVolume* physMO_5_2 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*38 * mm, 0.5*(-32 * mm), height + sc_sizeZ + 1.5* mo_sizeZ + paper_sizeZ), //at origin
+            logic_mo,                 //logical volume
+            "Scintillator 5 - MO - top",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+
+
     G4VPhysicalVolume* physScint_6 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*(-40 * mm), 0, height + 0.5*sc_sizeZ),         //at origin
-            logicsc,                 //logical volume
+            logicsc_duplicate,                 //logical volume
             "Scintillator 6",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+   
+    G4VPhysicalVolume* physPaper_6 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + 0.5 * paper_sizeZ),         //at origin
+            logicpaper,                 //logical volume
+            "Scintillator 6 - Paper",          //name
+            logicWorld,              //mother volume
+            false,                   //no boolean operation
+            0,                       //copy number
+            checkOverlaps);          //check for any overlaps
+    
+    G4VPhysicalVolume* physBNNT_6 = 
+        new G4PVPlacement(0,         //no rotation
+            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + paper_sizeZ + 0.5 * bnnt_sizeZ),   //at origin
+            logic_bnnt,                 //logical volume
+            "Scintillator 6 - BNNT",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
             0,                       //copy number
@@ -561,7 +772,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     
     G4VPhysicalVolume* physHolder_2 = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(0,0, height + 0.5*sc_sizeZ),         //at origin
+            G4ThreeVector(0,0, height + 0.5*enclosure_sizeZ),         //at origin
             logicHolder,              //logical volume
             "Holder",                   //name
             logicWorld,              //mother volume
@@ -569,7 +780,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
     
-    height += sc_sizeZ;
+    height += enclosure_sizeZ;
 
     //Gasket (Upper)
     G4VPhysicalVolume* physgsk_u_2 = 
