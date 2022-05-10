@@ -7,14 +7,14 @@
 #setting up the source
 /gps/pos/type Plane
 /gps/pos/shape Square
-/gps/pos/centre 0 0 40 cm
-/gps/pos/halfx 10 cm
-/gps/pos/halfy 20 cm
+/gps/pos/centre 0 0 2 cm
+/gps/pos/halfx 1 cm
+/gps/pos/halfy 1 cm
 
 #angles to be released
 /gps/ang/type cos
 /gps/ang/mintheta 0
-/gps/ang/maxtheta 3
+/gps/ang/maxtheta 3.1415
 
 #energy characteristics
 /gps/ene/type Lin
@@ -23,15 +23,15 @@
 
 #Gamma particles
 /gps/particle gamma
-/gps/ene/min 0 MeV
-/gps/ene/max 100000 MeV
-/run/beamOn 44000
+/gps/ene/min 10 keV
+/gps/ene/max 800 keV
+/run/beamOn 100 #Placeholder Value
 
 #Thermal Neutrons
 /gps/particle neutron
 /gps/ene/min 0.020 eV
 /gps/ene/max 0.030 eV
-/run/beamOn 176
+/run/beamOn 39600
 
 #Fast Neutrons
 /gps/particle neutron

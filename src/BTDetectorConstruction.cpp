@@ -43,9 +43,9 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 	G4NistManager* nist = G4NistManager::Instance();
 
 	// World Parameters
-	const G4double world_sizeX = 100 * cm;
-	const G4double world_sizeY = 100 * cm;
-	const G4double world_sizeZ = 100 * cm;
+	const G4double world_sizeX = 1 * cm;
+	const G4double world_sizeY = 1 * cm;
+	const G4double world_sizeZ = 2 * cm;
 
     G4bool checkOverlaps = true;
 
@@ -71,7 +71,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             checkOverlaps);        //check for any overlaps
 
 	// Scintillator Parameters
-	G4double sc_sizeX = 50 * mm, sc_sizeY = 175 * mm, sc_sizeZ = 50 * mm; //20x20x10 mm
+	G4double sc_sizeX = 10 * mm, sc_sizeY = 10 * mm, sc_sizeZ = 20 * mm; //20x20x10 mm
 	G4Material* sc_mat = nist->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE"); //Scintillator Material
 
     G4Box* scint =
