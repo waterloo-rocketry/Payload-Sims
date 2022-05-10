@@ -51,8 +51,9 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 	const G4double world_sizeX = 20 * cm;
 	const G4double world_sizeY = 20 * cm;
 	const G4double world_sizeZ = 300 * cm;
-	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
-
+	
+    G4double air_density = 0.001225 * g/cm3; //air density at upper atmospher	
+	G4Material* world_mat = nist->BuildMaterialWithNewDensity("Upper Atmosphere", "G4_AIR", air_density);
     G4Box* solidWorld =
         new G4Box("World",       // name
             world_sizeX, world_sizeX, world_sizeZ);     // size
