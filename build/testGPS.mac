@@ -12,12 +12,12 @@
 /gps/pos/shape Square
 /gps/pos/centre 0 0 300 cm
 /gps/pos/halfx 10 cm
-/gps/pos/halfy 20 cm
+/gps/pos/halfy 10 cm
 
 #angles to be released
 /gps/ang/type cos
 /gps/ang/mintheta 0
-/gps/ang/maxtheta 3
+/gps/ang/maxtheta 3.1415
 
 #energy characteristics
 /gps/ene/type Lin
@@ -28,7 +28,7 @@
 /gps/particle gamma
 /gps/ene/min 10 keV
 /gps/ene/max 800 keV
-/run/beamOn 44000
+/run/beamOn 44000 # Placeholder Value
 
 #Thermal Neutrons
 /gps/particle neutron
