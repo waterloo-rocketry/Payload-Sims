@@ -35,7 +35,7 @@
 /gps/ene/min 0.020 eV
 /gps/ene/max 0.030 eV
 /run/beamOn 19840
-
+exit
 
 #Fast Neutrons
 #/gps/particle neutron
