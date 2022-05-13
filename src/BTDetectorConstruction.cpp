@@ -296,11 +296,11 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             PLA,                        //material (temporarily PLA)
             "Holder Bottom");               //name
 
-    G4LogicalVolume* logicsc =
+    /*G4LogicalVolume* logicsc =
         new G4LogicalVolume(scint,         //scint is solid
             sc_mat,                            //material (Placeholder ABS, not actually)
             "Scintillator Scoring Volume");                   //name
-   
+   */
     G4LogicalVolume* logicsc_duplicate = 
         new G4LogicalVolume(scint,
             sc_mat,
@@ -328,7 +328,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     
     G4LogicalVolume* logiclid =
         new G4LogicalVolume(lid,         //scint is solid
-            alum_metal,                        //material
+            PLA,                        //material
             "Lid");               //name
 
     G4LogicalVolume* logicFBFace =
@@ -458,7 +458,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4VPhysicalVolume* physScint_1 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, height + 0.5*sc_sizeZ),         //at origin
-            logicsc,                 //logical volume
+            logicsc_duplicate,                 //logical volume
             "Scintillator 1",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
@@ -837,7 +837,6 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
-    fScoringVolume = logicsc;
 
     G4VPhysicalVolume* physrcpanel = 
         new G4PVPlacement(rotationMatrix,         //no rotation
@@ -927,7 +926,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             checkOverlaps);          //check for any overlaps
     
 
-    fScoringVolume = logicsc;
+    fScoringVolume = logicsc_duplicate;
 
     return physWorld;
 }
