@@ -31,6 +31,7 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4SubtractionSolid.hh"
+#include <iostream>
 
 BTDetectorConstruction::BTDetectorConstruction()
 : G4VUserDetectorConstruction(),
@@ -114,13 +115,13 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     PU_1->AddElement(N, 2);
     PU_1->AddElement(O, 1);
     
-    G4Material* BNNT-PU_1 = new G4Material(
+    G4Material* BNNT_PU_1 = new G4Material(
         "BNNT-PU_1",
         1.153 * g/cm3,
         2
     );
-    BNNT-PU_1->AddMaterial(BNNT_1, 0.715);
-    BNNT-PU_1->AddMaterial(PU_1, 0.285);
+    BNNT_PU_1->AddMaterial(BNNT_1, 0.715);
+    BNNT_PU_1->AddMaterial(PU_1, 0.285);
 
     G4Material* BNNT_2 = new G4Material(
         "BNNT 2",
@@ -138,13 +139,13 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     PU_2->AddElement(N, 2);
     PU_2->AddElement(O, 1);
     
-    G4Material* BNNT-PU_2 = new G4Material(
+    G4Material* BNNT_PU_2 = new G4Material(
         "BNNT-PU_2",
         1.362 * g/cm3,
         2
     );
-    BNNT-PU_2->AddMaterial(BNNT_2, 0.406);
-    BNNT-PU_2->AddMaterial(PU_2, 0.594);
+    BNNT_PU_2->AddMaterial(BNNT_2, 0.406);
+    BNNT_PU_2->AddMaterial(PU_2, 0.594);
 
     G4Material* Gd2O3 = new G4Material(
         "Gadolinium Oxide",
@@ -342,7 +343,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4LogicalVolume* logicsc =
         new G4LogicalVolume(scint,         //scint is solid
             sc_mat,                            //material (Placeholder ABS, not actually)
-            "Scintillator Scoring Volume");                   //name
+            "Scintillator_Scoring_Volume");                   //name
    
     G4LogicalVolume* logicsc_duplicate = 
         new G4LogicalVolume(scint,
@@ -351,12 +352,12 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
 
     G4LogicalVolume* logic_bnnt1 = 
         new G4LogicalVolume(bnnt1_layer,
-            BNNT-PU_1,
+            BNNT_PU_1,
             "BNNT1 layer");
     
     G4LogicalVolume* logic_bnnt2 = 
         new G4LogicalVolume(bnnt2_layer,
-            BNNT-PU_2,
+            BNNT_PU_2,
             "BNNT2 layer");
     
     G4LogicalVolume* logic_mo = 
@@ -506,7 +507,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4VPhysicalVolume* physScint_1 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*38 * mm, 0.5*32 * mm, height + 0.5*sc_sizeZ),         //at origin
-            logicsc,                 //logical volume
+            logicsc_duplicate,                 //logical volume
             "Scintillator 1",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
@@ -587,7 +588,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     
     G4VPhysicalVolume* physBNNT_3 = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + paper_sizeZ + 0.5 * bnnt_sizeZ),   //at origin
+            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + paper_sizeZ + 0.5 * bnnt1_sizeZ),   //at origin
             logic_bnnt1,                 //logical volume
             "Scintillator 3 - BNNT",          //name
             logicWorld,              //mother volume
@@ -790,7 +791,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     G4VPhysicalVolume* physScint_6 = 
         new G4PVPlacement(0,         //no rotation
             G4ThreeVector(0.5*(-40 * mm), 0, height + 0.5*sc_sizeZ),         //at origin
-            logicsc_duplicate,                 //logical volume
+            logicsc,                 //logical volume
             "Scintillator 6",          //name
             logicWorld,              //mother volume
             false,                   //no boolean operation
@@ -809,7 +810,7 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
     
     G4VPhysicalVolume* physBNNT_6 = 
         new G4PVPlacement(0,         //no rotation
-            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + paper_sizeZ + 0.5 * bnnt_sizeZ),   //at origin
+            G4ThreeVector(0.5*(-40 * mm), 0, height + sc_sizeZ + paper_sizeZ + 0.5 * bnnt2_sizeZ),   //at origin
             logic_bnnt2,                 //logical volume
             "Scintillator 6 - BNNT2",          //name
             logicWorld,              //mother volume
@@ -972,9 +973,9 @@ G4VPhysicalVolume* BTDetectorConstruction::Construct()
             false,                   //no boolean operation
             0,                       //copy number
             checkOverlaps);          //check for any overlaps
+    height += coupZ;
+
+    fScoringVolume = logicsc;
     
-
-    fScoringVolume = logicsc_duplicate;
-
     return physWorld;
 }
