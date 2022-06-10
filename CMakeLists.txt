@@ -24,3 +24,5 @@ target_link_libraries(BuildTest ${Geant4_LIBRARIES})
 
 # Install executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 install(TARGETS BuildTest DESTINATION bin)
+
+add_custom_command(TARGET BuildTest POST_BUILD COMMAND cp ${CMAKE_SOURCE_DIR}/macros/*.mac ${CMAKE_BINARY_DIR})
