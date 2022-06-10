@@ -1,7 +1,0 @@
-/home/willerf/source/geant4/geant4.10.07.p02/PayloadSim/Payload-Sims/build/CMakeFiles/install/strip.dir
-/home/willerf/source/geant4/geant4.10.07.p02/PayloadSim/Payload-Sims/build/CMakeFiles/install/local.dir
-/home/willerf/source/geant4/geant4.10.07.p02/PayloadSim/Payload-Sims/build/CMakeFiles/install.dir
-/home/willerf/source/geant4/geant4.10.07.p02/PayloadSim/Payload-Sims/build/CMakeFiles/list_install_components.dir
-/home/willerf/source/geant4/geant4.10.07.p02/PayloadSim/Payload-Sims/build/CMakeFiles/rebuild_cache.dir
-/home/willerf/source/geant4/geant4.10.07.p02/PayloadSim/Payload-Sims/build/CMakeFiles/edit_cache.dir
-/home/willerf/source/geant4/geant4.10.07.p02/PayloadSim/Payload-Sims/build/CMakeFiles/BuildTest.dir
