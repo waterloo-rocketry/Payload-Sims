@@ -13,7 +13,8 @@
 BTRunAction::BTRunAction()
 	: G4UserRunAction(),
 	fEdep(0.),
-	fEdep2(0.)
+	fEdep2(0.),
+    fpCount(0)
 {
 	// add more units to describe dose
     const G4double milligray = 1.e-3 * gray;
@@ -99,11 +100,15 @@ void BTRunAction::EndOfRunAction(const G4Run* run)
         << G4endl
         << "Cumulated dose per run: "
         << G4BestUnit(dose, "Dose") << "rms = " << G4BestUnit(rmsDose, "Dose")
+        << G4endl
+        << "Particle count for this run: "
+        << fpCount
         << G4endl;
 }
 
 void BTRunAction::AddEdep(G4double edep)
 {
+    if (edep > 0) fpCount ++;
     fEdep += edep;
     fEdep2 += edep * edep;
 }
