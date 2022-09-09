@@ -1,6 +1,9 @@
 # Macro testGPS.mac
 /run/initialize
 
+#Setting up HepRepFile output
+#Use the flush command to generate a new file
+
 #/vis/open HepRepFile
 #/vis/scene/create
 #/vis/scene/add/volume
@@ -17,9 +20,13 @@
 /event/verbose 0
 /gps/verbose 2
 
+# Enable this command to allow for accumulation of particle onto the visualization file after each "event"
+# where each "event" is a beamOn command.
+# Otherwise, each beam (instead of each update or flush) will generate a visualization file for HepRep.
+
 #/vis/scene/endOfEventAction accumulate
 
-#setting up the source
+#setting up the General Particle Source
 /gps/pos/type Plane
 /gps/pos/shape Square
 /gps/pos/centre 0 0 65 cm
@@ -31,6 +38,9 @@
 /gps/ang/mintheta 0
 /gps/ang/maxtheta 1.57
 
+# https://www.fe.infn.it/u/paterno/Geant4_tutorial/slides_further/GPS/GPS_manual.pdf
+# https://geant4-forum.web.cern.ch/uploads/short-url/lPOPXwh9kot4oJ399P7x49qk01d.pdf
+
 #energy characteristics
 /gps/ene/type Lin
 /gps/ene/gradient 1
@@ -41,6 +51,10 @@
 /gps/ene/min 10 keV
 /gps/ene/max 10 MeV
 /run/beamOn 3000000
+
+# A summary containing the dosage will be displayed on the text interface after each beamOn command.
+
+# beamOn count should be roughly representative of the payload launch. 
 
 #/vis/viewer/update
 
