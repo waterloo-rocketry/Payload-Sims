@@ -40,7 +40,7 @@
 /gps/particle gamma
 /gps/ene/min 10 keV
 /gps/ene/max 10 MeV
-/run/beamOn 3000000
+/run/beamOn 300
 
 #/vis/viewer/update
 
@@ -58,5 +58,6 @@
 /gps/particle neutron
 /gps/ene/min 1 MeV
 /gps/ene/max 20 MeV
-/run/beamOn 29760
+/run/beamOn 100
 #/vis/viewer/update
+
