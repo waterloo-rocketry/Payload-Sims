@@ -1,3 +1,7 @@
+
+#include <vector>
+#include <string>
+
 #include "BTDetectorConstruction.hh"
 #include "BTActionInitialization.hh"
 #include "G4RunManager.hh"
@@ -8,11 +12,40 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
+const std::string DEFAULT_MACRO = "init_vis.mac";
+
 int main(int argc, char** argv)
 {
-	// detect interactive mode and define UI session
+	// arg parsing
+    int opt;
+    bool nouiFlag = false;
+    bool helpFlag = false;
+    std::string macroFiles = "";
+
+    while((opt = getopt(argc, argv, "uh")) != -1) {
+        switch (opt) {
+            case 'u':
+                nouiFlag = true;
+                break;
+            case 'h':
+                helpFlag = true;
+                break;
+            default:
+                helpFlag = true;
+        }
+    }
+
+    if (helpFlag) {
+        std::cout << "BuildTest\n";
+        return 0;
+    }
+
+    for (unsigned int i = optind; i < argc; ++i) {
+        macroFiles = macroFiles + " " + std::string{argv[i]};
+    }
+
 	G4UIExecutive* ui = nullptr;
-	if (argc == 1) {
+	if (!nouiFlag) {
 		ui = new G4UIExecutive(argc, argv);
 	}
 
@@ -39,19 +72,18 @@ int main(int argc, char** argv)
 	// Get the pointer to the User Interface manager
 	G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
-	// Process macro or start UI session
-	if (!ui) {
-        // batch mode
-		G4String command = "/control/execute ";
-		G4String fileName = argv[1];
-		UImanager->ApplyCommand(command + fileName);
-	}
-	else {
-		// interactive mode
-		UImanager->ApplyCommand("/control/execute init_vis.mac");
+    // run macros
+    if (macroFiles.size() > 0) {
+        auto command = "/control/execute" + macroFiles;
+        std::cout << command << "\n";
+        UImanager->ApplyCommand(command);
+    }
+
+    // start ui session if in ui mode
+    if (!nouiFlag) {
 		ui->SessionStart();
 		delete ui;
-	}
+    }
 
 	delete visManager;
 	delete runManager;
