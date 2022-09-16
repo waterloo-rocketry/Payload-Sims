@@ -86,9 +86,9 @@ Sample macro files can be found under the macros folder. Note that init.vis may 
 ## Visualization
 
 If installed with OpenGL and Qt during setup as flags (as shown in prior sections), init.mac can be used to generate an OpenGL + Qt viewer along with approproiate visual settings. Otherwise, the testGPS.mac will provide a fully text-based interface with the results of each event displayed in console. 
-testGPS.mac also provides option to output HepRApp visualization files should the visualization commands commented out with `#` be used. A heprep file will be generated at the end of each event. These visualization files can be opened by Heprep.jar, by running
+testGPS.mac also provides option to output HepRApp visualization files should the visualization commands commented out with `#` be used. A heprep file will be generated at the end of each event. These visualization files can be opened by HepRApp.jar, by running
 ```
-$ java -jar heprep.jar
+$ java -jar HepRApp.jar
 ```
 which will allow you to load visualization files via the menus inside the HepRApp visualization engine.
 
