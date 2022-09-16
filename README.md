@@ -5,7 +5,7 @@ Repository for GEANT4 simulations created for the Payload 2020/2021/22 Project. 
 
 Note that this guide is written for Linux. There are extra steps involved in the installation guide of Windows and additional software pre-reqs, which will be detailed in the Additional Notes.
 
-## PREREQUISITES
+## Prerequisites
 
 Software Prerequisites for running the Simulation on Linux includes, but may not be limited to
 - GCC (Check with Geant4 website for the version)
@@ -48,7 +48,7 @@ handy script for this (you should add this to your `.bashrc` or equivalent):
 $ source <path-to-geant4-dir>/geant4-v11.0.2-install/bin/geant4.sh
 ```
 
-## BUILDING
+## Build
 
 The building process of the Payload-Sims project is very similar to the process of building the exampleB1. Simply put, follow this guide, but swap out B1-build for the name of your cloned repository (e.g. Sims-build). [https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/GettingStarted/makeFile.html] (here)
 
@@ -62,15 +62,15 @@ $ make -j <number-of-cores>
 ```
 
 Note that changing the setup of the experiment will require rebuilding and remaking of the Payload Simulation. See the documentation in src for details about the experiment setup.
-## RUNNING
+## Running
 
 After the build, an executable by the name of BuildTest should be available to be ran. The executable provides an interface in which you can run tests by generating particles and the cumulative dosage of the counting volume will be tallied at the end of each action. You can also use it to generate visualizations.
 
-## USEFUL MACROS AND COMMANDS
+## Useful macros and commands
 Upon entering the interface of the executable, there are a couple of useful commands to run.
 
 ```
-help -- jumps to documentation of various commands
+help -- jumps to documentation of various commands. Run it in BuildTest.
 /run/initialize -- initializes the geometry and environment. This needs to be done before any tests.
 /run/beamOn n -- runs n beams of particles in the environment, each time it is ran, a summary of dosage will be generated.
 /vis/viewer/update -- update the display and generate a new visualization file where applicable.
