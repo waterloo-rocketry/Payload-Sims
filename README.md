@@ -4,10 +4,12 @@ Repository for GEANT4 simulations created for the Payload 2020/2021 Project
 
 ## PREREQUISITES
 
-Before building this project, you need to install the Geant4 Toolkit. Setup instructions can be found [https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/gettingstarted.html](here).
+Before building this project, you need to
+[install the Geant4 Toolkit](https://geant4-userdoc.web.cern.ch/UsersGuides/InstallationGuide/html/gettingstarted.html).
 
-TLDR, download and extract source code from
-[https://geant4.web.cern.ch/support/download](here). Create a source directory
+TLDR, download and extract
+[the source code](https://geant4.web.cern.ch/support/download).
+Then create a source directory
 like this:
 ```
 geant4
@@ -24,8 +26,8 @@ $ cmake -DCMAKE_INSTALL_PREFIX=<path-to-geant4-dir>/geant4-v11.0.2-install \
         -DGEANT4_USE_OPENGL_X11=ON \
         -DGEANT4_USE_QT=ON \
         ../geant4-v11.0.2
-$ make -j <number-of-cores>
-$ make install
+$ make -j $(nproc)
+$ sudo make install
 ```
 Building geant4 might take a while (sit tight).
 
@@ -43,6 +45,6 @@ the project:
 $ mkdir build
 $ cd build
 $ cmake ../
-$ make -j <number-of-cores>
+$ make -j$(nproc)
 ```
 
