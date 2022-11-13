@@ -26,8 +26,8 @@ $ cmake -DCMAKE_INSTALL_PREFIX=<path-to-geant4-dir>/geant4-v11.0.2-install \
         -DGEANT4_USE_OPENGL_X11=ON \
         -DGEANT4_USE_QT=ON \
         ../geant4-v11.0.2
-$ make -j <number-of-cores>
-$ make install
+$ make -j $(nproc)
+$ sudo make install
 ```
 Building geant4 might take a while (sit tight).
 
